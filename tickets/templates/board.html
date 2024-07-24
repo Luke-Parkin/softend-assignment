@@ -20,8 +20,30 @@
             <li>
                 <h3>{{ ticket.title }}</h3>
                 <p>{{ ticket.description }}</p>
+                <button class="delete-btn" data-id="{{ ticket.id }}">Delete</button>
             </li>
         {% endfor %}
     </ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-btn').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var ticketId = this.getAttribute('data-id');
+                    fetch('/delete/' + ticketId + '/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

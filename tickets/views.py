@@ -13,3 +13,8 @@ def ticket_list(request):
 
     tickets = Ticket.objects.all().order_by("-created_at")
     return render(request, "board.html", {"tickets": tickets})
+
+
+def delete_ticket(request, ticket_id):
+    Ticket.objects.get(id=ticket_id).delete()
+    return JsonResponse({"status": "success"})
