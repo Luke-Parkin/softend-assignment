@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticketing System</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
+{% extends 'base.html' %}
+{%block content%}
 <body>
     <h1>Ticketing System</h1>
     <form id="ticket-form" method="post">
@@ -46,4 +40,4 @@
         });
     </script>
 </body>
-</html>
+{%endblock%}
