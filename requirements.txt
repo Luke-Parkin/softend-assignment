@@ -35,3 +35,4 @@ typing_extensions==4.12.2
 urllib3==2.2.2
 uvicorn==0.30.3
 wheel==0.43.0
+whitenoise==6.7.0
