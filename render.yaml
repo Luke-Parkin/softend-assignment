@@ -4,7 +4,7 @@ services:
     name: agile-assets
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker"   
+    startCommand: "python -m gunicorn agile.asgi:application -k uvicorn.workers.UvicornWorker"   
     envVars:
       - key: WEB_CONCURRENCY
         value: 4
