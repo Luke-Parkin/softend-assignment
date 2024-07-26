@@ -35,6 +35,10 @@
 ## Specific deployment implementations for this production
 
 For this the official production, a dual deployment is used.
+Through searching for suitable free hosts, two possibilities came up. Render and Vercel.
+Render spins down services after 15 minutes of inactivity, and is incredibly slow. As such, it is guaranteed to be up *eventually* but may be very slow.
+On the other hand, vercel is a lot faster, however has usage limits that may cap out.
+
 <https://render.com/> is used for one of them.
 The environment variables are stored as secrets within render.
 The render.yaml defines the infrastructure and concurrency.
@@ -43,7 +47,5 @@ The build.sh script handles the building.
 The database is hosted on <neon.tech>. This is quite slow but good enough for the demonstration.
 
 Using the free version of render.com does have drawbacks, primarily its speed and it's spin-down feature. Render spins down services after 15 minutes of no use. Since the service takes 2 minutes to start back up, this makes usage a bad experience.
-
-As such, as a workaround <https://console.cron-job.org> was used. Every 10 minutes it sends a get request to the dashboard page, keeping the service alive.
 
 <https://vercel.com> is also used, vercel.json stores the specific configuration from this, and uses the same build.sh as render.
