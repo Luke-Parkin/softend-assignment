@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +25,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-_o4+)y5dqd0zkrm(rdyue6fmv+eq6ki_m=8l$=6jz2eu-i=h@5"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+# This section handles dotenvs, if there is a .env it'll use that to connect to the db,
+# otherwise it will use environment variables.
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+def get_env_variable(var_name, default=None):
+    return os.environ.get(var_name) or default
+
+
+if get_env_variable("DEBUG"):
+    DEBUG = True
 ALLOWED_HOSTS = []
 
 
@@ -44,6 +58,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -76,13 +91,28 @@ WSGI_APPLICATION = "agile.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
+if DEBUG:  # If in debug, use django default db
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:  # If in prod, use psql db
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": get_env_variable("PGDATABASE"),
+            "USER": get_env_variable("PGUSER"),
+            "PASSWORD": get_env_variable("PGPASSWORD"),
+            "HOST": get_env_variable("PGHOST"),
+            "PORT": get_env_variable("PGPORT", "5432"),
+            "OPTIONS": {
+                "sslmode": "require",
+            },
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -118,7 +148,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
