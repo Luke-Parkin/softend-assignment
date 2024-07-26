@@ -2,15 +2,31 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import Ticket
+from .models import AssetCategories
 
 
 @login_required
 def dashboard(request):
-    # If posting to this endpoint, a ticket is being sent.
+    # If posting to this endpoint, a ticket is being submitted.
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
-        Ticket.objects.create(title=title, description=description)
+
+        # Server side validation
+        if request.user.is_superuser:
+            print("all good here!")
+            user = request.POST.get("username") or request.user.username
+            print(request.POST.get("user"))
+            print(user)
+        else:
+            user = request.user.username
+
+        Ticket.objects.create(
+            asset_title=title,
+            user_owner=user,
+            asset_description=description,
+            category=AssetCategories.LAPTOP,
+        )
         return redirect("dashboard")
 
     tickets = Ticket.objects.all().order_by("-created_at")
@@ -19,8 +35,10 @@ def dashboard(request):
 
 def delete_ticket(request, ticket_id):
     if request.user.is_authenticated:
-        # if request.user.has_perm("some-permission") < in future check has delete permissions
-        # if request.user.id == ticket.userid or if user is superuser
-        Ticket.objects.get(id=ticket_id).delete()
-        return JsonResponse({"status": "success"})
-    return JsonResponse({"status": "failure"})
+        if request.user.is_superuser:
+            Ticket.objects.get(asset_id=ticket_id).delete()
+            return JsonResponse({"status": "success"})
+        elif request.user.username == Ticket.objects.get(asset_id=ticket_id).user_owner:
+            Ticket.objects.get(asset_id=ticket_id).delete()
+            return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "unauthorized"})

@@ -13,10 +13,11 @@ class Ticket(models.Model):
     category = models.CharField(
         max_length=20, choices=[(tag.name, tag.value) for tag in AssetCategories]
     )
+    asset_title = models.CharField(max_length=255)
     user_owner = models.CharField(
         max_length=255
     )  # this will be the uuid of a user once that is implemented
-    asset_description = models.TextField()
+    asset_description = models.TextField(blank=True)
     # When the model is created
     created_at = models.DateTimeField(auto_now_add=True)
     # When model is modified

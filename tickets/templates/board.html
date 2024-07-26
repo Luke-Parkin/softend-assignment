@@ -6,15 +6,21 @@
         {% csrf_token %}
         <input type="text" name="title" placeholder="Ticket Title" required>
         <textarea name="description" placeholder="Ticket Description" required></textarea>
+        {% if user.is_superuser %}
+        Optionally, assign owner: <input type="text" name="username" placeholder="{{user.username}}" optional>
+        {% endif %}
         <button type="submit">Add Ticket</button>
     </form>
 
     <ul id="ticket-list">
         {% for ticket in tickets %}
             <li>
-                <h3>{{ ticket.title }}</h3>
-                <p>{{ ticket.description }}</p>
-                <button class="delete-btn" data-id="{{ ticket.id }}">Delete</button>
+                <h3>{{ ticket.asset_title }}</h3>
+                <p>{{ ticket.asset_description }}</p>
+                <p><i>owner: {{ticket.user_owner}}</i></p>
+                {% if ticket.user_owner == user.username or user.is_superuser%} 
+                <button class="delete-btn" data-id="{{ ticket.asset_id }}">Delete</button>
+                {%endif%}
             </li>
         {% endfor %}
     </ul>
@@ -23,7 +29,8 @@
             document.querySelectorAll('.delete-btn').forEach(function(button) {
                 button.addEventListener('click', function() {
                     var ticketId = this.getAttribute('data-id');
-                    fetch('/delete/' + ticketId + '/', {
+                    var deleteUrl = '/dashboard/delete/' + ticketId + '/';
+                    fetch(deleteUrl, {
                         method: 'POST',
                         headers: {
                             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,

@@ -19,7 +19,7 @@ def register(request):
             return redirect(reverse("login") + "?signedup=true")
     else:
         form = UserCreationForm()
-    return render(request, "register.html", {"form": form})
+        return render(request, "register.html", {"form": form})
 
 
 def login_page(request):
