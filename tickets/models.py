@@ -11,7 +11,7 @@ class AssetCategories(Enum):
 class Ticket(models.Model):
     asset_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     category = models.CharField(
-        max_length=20, choices=[(tag.name, tag.value) for tag in AssetCategories]
+        choices=[(tag.name, tag.value) for tag in AssetCategories]
     )
     asset_title = models.CharField(max_length=255)
     user_owner = models.CharField(

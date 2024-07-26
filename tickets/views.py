@@ -14,10 +14,7 @@ def dashboard(request):
 
         # Server side validation
         if request.user.is_superuser:
-            print("all good here!")
             user = request.POST.get("username") or request.user.username
-            print(request.POST.get("user"))
-            print(user)
         else:
             user = request.user.username
 
