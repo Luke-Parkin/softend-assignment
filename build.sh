@@ -2,10 +2,10 @@
 # Exit on error
 set -o errexit
 
-python -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 # Convert static asset files
-python manage.py collectstatic --no-input
+python3 manage.py collectstatic --no-input
 
 # Apply any outstanding database migrations
-python manage.py migrate
+python3 manage.py migrate
