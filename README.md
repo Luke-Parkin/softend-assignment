@@ -2,7 +2,7 @@
 
 1. Install dependencies with `pip install -r requirements.txt`
 
-2. By default, when 'Debug' is True in the .env.development, the default django database will be used, which requires no set up and is connected automatically.
+2. By default, when 'PROD' is NOT set in environment variables the default django database will be used, which requires no set up and is connected automatically.
 
 3. Once you have connected a database, migrations need to be applied.
    Migrations can be applied by running (from the project's root)
@@ -27,4 +27,4 @@ When in production, a database needs to be set up.
    PGUSER='YOUR-DB-USER'
    PGPASSWORD='YOUR-DB-PASSWORD'
 
-   Ensure the 'Debug' environment variable is NOT set.
+   Ensure the 'PROD' environment variable is set.

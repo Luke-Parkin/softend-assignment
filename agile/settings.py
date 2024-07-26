@@ -39,7 +39,7 @@ def get_env_variable(var_name, default=None):
 
 
 DEBUG = True
-if get_env_variable("PROD"):
+if get_env_variable("PROD") == "TRUE":
     DEBUG = False
 ALLOWED_HOSTS = []
 
