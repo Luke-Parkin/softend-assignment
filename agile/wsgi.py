@@ -11,6 +11,9 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agile.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "agile.settings")
 
 application = get_wsgi_application()
+
+# Vercel only looks for 'app', whereas render looks for application
+app = application
