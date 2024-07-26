@@ -27,4 +27,4 @@ When in production, a database needs to be set up.
    PGUSER='YOUR-DB-USER'
    PGPASSWORD='YOUR-DB-PASSWORD'
 
-   Ensure the 'PROD' environment variable is set.
+   Ensure the 'PROD' environment variable is set to 'TRUE'
