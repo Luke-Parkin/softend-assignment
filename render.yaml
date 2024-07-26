@@ -7,4 +7,4 @@ services:
     startCommand: "python -m gunicorn agile.asgi:application -k uvicorn.workers.UvicornWorker"   
     envVars:
       - key: WEB_CONCURRENCY
-        value: 4
+        value: 1
