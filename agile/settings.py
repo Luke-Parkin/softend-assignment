@@ -38,9 +38,9 @@ def get_env_variable(var_name, default=None):
     return os.environ.get(var_name) or default
 
 
-DEBUG = False
-if get_env_variable("DEBUG"):
-    DEBUG = True
+DEBUG = True
+if get_env_variable("PROD"):
+    DEBUG = False
 ALLOWED_HOSTS = []
 
 
