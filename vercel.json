@@ -22,6 +22,10 @@
       {
         "src": "/(.*)",
         "dest": "agile/wsgi.py"
+      },
+      { 
+        "src": "/static/(.*)", 
+        "dest": "/staticfiles/$1" 
       }
     ]
   }
