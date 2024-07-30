@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from .models import Ticket
 from .models import AssetCategories
 
@@ -18,19 +19,22 @@ def dashboard(request):
         else:
             user = request.user.username
 
-        Ticket.objects.create(
+        ticket = Ticket.objects.create(
             asset_title=title,
             user_owner=user,
             asset_description=description,
             category=AssetCategories.LAPTOP,
         )
-        return redirect("dashboard")
+        return redirect(reverse("dashboard") + f"?newt={ticket.asset_id}")
 
     delete_success = request.GET.get("delete", None)
+    new_ticket = request.GET.get("newt", None)
 
     tickets = Ticket.objects.all().order_by("-created_at")
     return render(
-        request, "board.html", {"tickets": tickets, "deleted": delete_success}
+        request,
+        "board.html",
+        {"tickets": tickets, "deleted": delete_success, "new_ticket": new_ticket},
     )
 
 

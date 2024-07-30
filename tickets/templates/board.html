@@ -17,7 +17,7 @@
 
     <ul id="ticket-list">
         {% for ticket in tickets %}
-            <li>
+            <li data-id="{{ ticket.asset_id }}">
                 <h3>{{ ticket.asset_title }}</h3>
                 <p>{{ ticket.asset_description }}</p>
                 <p><i>owner: {{ticket.user_owner}}</i></p>
@@ -28,6 +28,7 @@
         {% endfor %}
     </ul>
     <script>
+        // Handles the delete button event
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.delete-btn').forEach(function(button) {
                 button.addEventListener('click', function(event) {
@@ -65,6 +66,21 @@
             });
         });
     </script>
-    
+    <script> 
+        // Handles the 'new ticket' event
+        document.addEventListener('DOMContentLoaded', function() {
+            var newTicket = "{{ new_ticket }}"; 
+            if (newTicket) {
+                var ticketList = document.getElementById('ticket-list');
+                var tickets = ticketList.getElementsByTagName('li');
+                for (var i = 0; i < tickets.length; i++) {
+                    if (tickets[i].getAttribute('data-id') === newTicket) {
+                        tickets[i].classList.add('flash-yellow');
+                        break;
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 {%endblock%}
