@@ -26,8 +26,12 @@ def dashboard(request):
         )
         return redirect("dashboard")
 
+    delete_success = request.GET.get("delete", None)
+
     tickets = Ticket.objects.all().order_by("-created_at")
-    return render(request, "board.html", {"tickets": tickets})
+    return render(
+        request, "board.html", {"tickets": tickets, "deleted": delete_success}
+    )
 
 
 def delete_ticket(request, ticket_id):

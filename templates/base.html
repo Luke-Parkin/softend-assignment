@@ -6,6 +6,10 @@
     <title>Ticketing System</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+{% comment %} Detect if js is disabled and warn the user {% endcomment %}
+<noscript>
+    <h1> Javascript is disabled in your browser. Website functionality <b>will</b> be broken</h1>
+</noscript>
 <body>
     {% block content %} {% endblock %}
 </body>
