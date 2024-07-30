@@ -1,0 +1,21 @@
+{% block remove_params %}
+<script>
+    // removes url params
+    document.addEventListener('DOMContentLoaded', function() {
+        function removeURLParameters() {
+            var url = window.location.href;
+            
+            // If params exist
+            if (url.indexOf('?') > -1) {
+                // Remove everything after the '?'
+                var cleanURL = url.substring(0, url.indexOf('?'));
+                
+                // Update the URL, do not reload
+                window.history.replaceState({}, document.title, cleanURL);
+            }
+        }
+
+        removeURLParameters();
+    });
+</script>
+{% endblock %}

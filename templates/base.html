@@ -14,5 +14,6 @@
 </noscript>
 <body>
     {% block content %} {% endblock %}
+    {% include 'clear_params.html' %} {% block remove_params %}{% endblock %}
 </body>
 </html>
