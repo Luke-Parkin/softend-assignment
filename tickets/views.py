@@ -14,9 +14,16 @@ def dashboard(request):
         description = request.POST.get("description")
 
         # Server side validation
+        if title == None or description == None:
+            # Front end does not allow 'None' in title or descr, so if this point is reached it is likely this endpoint
+            # is not reached via the front end, so a JSON response is sent.
+            return JsonResponse({"status": "Invalid post request"})
+
         if request.user.is_superuser:
+            # we do not enforce a username requirement, owners do not have to have user accounts
             user = request.POST.get("username") or request.user.username
         else:
+            # since login_required, this will always be true
             user = request.user.username
 
         ticket = Ticket.objects.create(
@@ -27,6 +34,7 @@ def dashboard(request):
         )
         return redirect(reverse("dashboard") + f"?newt={ticket.asset_id}")
 
+    # Check for events
     delete_success = request.GET.get("delete", None)
     new_ticket = request.GET.get("newt", None)
 
@@ -53,26 +61,36 @@ def delete_ticket(request, asset_id):
 @login_required
 def edit_ticket(request, asset_id):
     if request.method == "POST":
-        asset = Ticket.objects.get(asset_id=request.POST.get("asset_id"))
-        if not asset:
-            print("appropriate error again")
+        try:
+            asset = Ticket.objects.get(asset_id=request.POST.get("asset_id"))
+        except:
+            return redirect(reverse("asset_not_found"))
 
         if request.user.is_superuser:
             user = request.POST.get("owner") or request.user.username
         else:
             user = request.user.username
+
         asset.asset_title = request.POST.get("title") or asset.asset_title
         asset.user_owner = user
         asset.asset_description = (
             request.POST.get("description") or asset.asset_description
         )
-        asset.save()
         # asset.category = AssetCategories.LAPTOP
+
+        asset.save()
         return redirect(reverse("dashboard") + f"?newt={asset.asset_id}")
 
-    asset = Ticket.objects.get(asset_id=asset_id)
+    try:  # try fetch asset
+        asset = Ticket.objects.get(asset_id=asset_id)
+    except:  # if asset fetch fails, redirect to 404 page
+        return redirect(reverse("asset_not_found"))
+
     if asset.user_owner == request.user.username or request.user.is_superuser:
         return render(request, "edit.html", {"asset": asset})
     else:
-        print("no permissions - fix this error later.")
-        return JsonResponse({"status": "noperms"})
+        return JsonResponse({"status": "no_permissions"})
+
+
+def asset_not_found(request):
+    return render(request, "asset-404.html")
