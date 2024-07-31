@@ -23,6 +23,7 @@
                 <p><i>owner: {{ticket.user_owner}}</i></p>
                 {% if ticket.user_owner == user.username or user.is_superuser%} 
                 <button class="delete-btn" data-id="{{ ticket.asset_id }}">Delete</button>
+                <a href="{% url 'edit_ticket' ticket.asset_id %}">Edit Ticket</a>
                 {%endif%}
             </li>
         {% endfor %}

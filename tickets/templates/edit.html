@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{%block content%}
+<h1> default header </h1>
+<form id ="edit-form" method ="post">
+    {% csrf_token %}
+    <input type="hidden" name="asset_id" value="{{ asset.asset_id }}">
+    <input type="text" name="title" value="{{asset.asset_title}}" required>
+    <textarea name="description" required>{{asset.asset_description}}</textarea>    {% if user.is_superuser %}
+    <input type="text" name="owner" value="{{asset.user_owner}}" required>
+    {% else %}
+    <input type="text" name="owner" value="{{asset.user_owner}}" readonly>
+    {% endif %}
+    <button type="submit">Add Ticket</button>
+</form>
+
+created: {{asset.created_at}}
+last modified: {{asset.last_modified}}
+{%endblock%}
