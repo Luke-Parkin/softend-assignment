@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticketing System</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-{% comment %} Detect if js is disabled and warn the user {% endcomment %}
+{% extends 'base.html' %}
+{% block header %}
+{% load static %}
 <body style="margin: 0;">
     <div class="header-banner">
         <a href={% url 'dashboard' %}>
@@ -20,6 +12,9 @@
         <div class="user-welcome">
             Welcome, {{user.username}}
         </div>
+        {% if user.is_superuser %}
+            <a class="user-welcome logout" href={%url 'admin:index'%}>admin</a>
+        {% endif %} 
         <a href={% url 'logout'%} class="logout">
             Log out
         </a>
@@ -30,7 +25,7 @@
     <noscript>
         <h1> Javascript is disabled in your browser. Website functionality <b>will</b> be broken</h1>
     </noscript>
-    {% block content %} {% endblock %}
     {% include 'clear_params.html' %} {% block remove_params %}{% endblock %}
 </body>
 </html>
+{% endblock %}
