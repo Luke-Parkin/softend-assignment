@@ -7,3 +7,112 @@
 .flash-yellow {
     animation: flash 1s ease-out forwards;
 }
+
+.header-banner {
+    display: flex;
+    background-color: #fcd253;
+    align-items: stretch; /* Ensure children stretch to full height */
+    padding: 0 0.4em; /* Add horizontal padding */
+}
+
+.header-img {
+    width: 8em; 
+    height: 100%; 
+    object-fit: contain;
+}
+
+.user-controls {
+    display: flex;
+    margin-left: auto;
+    align-items: center; 
+}
+
+.user-welcome {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+}
+
+.logout {
+    display: flex;
+    align-items: center;
+    background-color: aqua;
+    padding: 0 1em; 
+    text-decoration: none;
+    color: black;
+    height: 100%; 
+}
+
+.sub-header {
+    background-color: #f2efc4;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+.sub-hero {
+    font-family:cursive;
+    margin-top:auto;
+}
+/* Hides sub-hero if on mobile */
+@media screen and (max-width: 600px) {
+    .sub-hero {
+      display: none;
+    }
+  }
+  
+
+.landing-body {
+    background-color:#fcd253;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:0;
+
+}
+
+.landing-container{
+    margin-top: 4em;
+    background-color:#f2efc4;
+    width: 600px;
+    padding: 20px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+@media screen and (max-width: 800px){
+    .landing-container{
+        width: 100%;
+        height:100%;
+        border-radius: 0;
+    }
+}
+
+.landing-img {
+    width: 10em; 
+    height: 100%; 
+    object-fit: contain;
+    padding-left:2.5em; /* Compensates for the fact the letters arent centered in the image (due to the arrow) */
+
+}
+
+.condensed-font{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.landing-button {
+    display: block; /* makes <a> behave like a div */
+    background-color: whitesmoke;
+    border-radius: 2em;
+    margin-top: 0.5em;
+    width: 50%;
+    margin-left: 25%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    text-decoration: none; /* No ugly underline */
+    color: black;
+}
+

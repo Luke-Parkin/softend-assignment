@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<body class ="landing-body">
+  <div class="landing-container">
+    <a href={% url 'dashboard' %}>
+      <img class="landing-img" src="{% static 'img/logo.png' %}" title="Agile Inventory Manager" alt="Agile Inventory Manager Logo">
+    </a>
   <h2>Register</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Register</button>
   </form>
+  <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 {% endblock %}

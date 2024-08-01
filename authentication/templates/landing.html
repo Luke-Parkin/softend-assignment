@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-hello
-<a href="{% url 'login' %}">login</a>
-<a href="{% url 'register' %}">register</a>
+<body class ="landing-body">
+    <div class="landing-container">
+        <flex class="condensed-font">WELCOME TO</flex>
+        <br> <img class="landing-img" src="{% static 'img/logo.png' %}" title="Agile Inventory Manager" alt="Agile Inventory Manager Logo">
+        <br> <flex style="font-family:cursive; font-size:large;">The Agile Inventory Manager</flex>
+        <br style="margin-bottom:1em;">
+        <a href="{% url 'login' %}" class="landing-button">login</a>
+        <a href="{% url 'register' %}" class="landing-button">register</a>
+    </div>
 {% endblock %}

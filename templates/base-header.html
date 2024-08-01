@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticketing System</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+{% comment %} Detect if js is disabled and warn the user {% endcomment %}
+<body style="margin: 0;">
+    <div class="header-banner">
+        <a href={% url 'dashboard' %}>
+        <img class="header-img" src="{% static 'img/logo.png' %}" title="Agile Inventory Manager" alt="Agile Inventory Manager Logo">
+        </a>
+        <flex class="sub-hero">The Agile Inventory Manager service</flex>
+        {% if user.username %}
+        <div class="user-controls">
+        <div class="user-welcome">
+            Welcome, {{user.username}}
+        </div>
+        <a href={% url 'logout'%} class="logout">
+            Log out
+        </a>
+        </div>
+        {% endif %}
+        {% comment %} <h2> Agile Inventory Manager </h2>  {% endcomment %}
+    </div>
+    <noscript>
+        <h1> Javascript is disabled in your browser. Website functionality <b>will</b> be broken</h1>
+    </noscript>
+    {% block content %} {% endblock %}
+    {% include 'clear_params.html' %} {% block remove_params %}{% endblock %}
+</body>
+</html>

@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base-header.html' %}
 {%block content%}
-<h1> default header </h1>
+<div class="sub-header">Edit ticket</div>
 <form id ="edit-form" method ="post">
     {% csrf_token %}
     <input type="hidden" name="asset_id" value="{{ asset.asset_id }}">

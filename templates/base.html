@@ -9,10 +9,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 </head>
 {% comment %} Detect if js is disabled and warn the user {% endcomment %}
-<noscript>
-    <h1> Javascript is disabled in your browser. Website functionality <b>will</b> be broken</h1>
-</noscript>
-<body>
+    {%block header%}
+    {%endblock%}
     {% block content %} {% endblock %}
     {% include 'clear_params.html' %} {% block remove_params %}{% endblock %}
 </body>

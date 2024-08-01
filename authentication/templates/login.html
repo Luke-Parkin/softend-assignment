@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<body class ="landing-body">
+  <div class="landing-container">
+    <a href={% url 'dashboard' %}>
+      <img class="landing-img" src="{% static 'img/logo.png' %}" title="Agile Inventory Manager" alt="Agile Inventory Manager Logo">
+    </a>
   {% if signedup %}
     <h1> You have been signed up, please login </h1>
   {% endif %}
@@ -14,4 +19,5 @@
     <button type="submit">Login</button>
   </form>
   <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+</div>
 {% endblock %}
