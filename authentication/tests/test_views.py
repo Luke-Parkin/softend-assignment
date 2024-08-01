@@ -48,3 +48,6 @@ def test_landing_redirect_unauthenticated(mock_render):
     response = landing(request)
 
     mock_render.assert_called_once_with(request, "landing.html")
+
+
+# The rest of auth is unit tested in django: https://github.com/django/django/tree/main/tests/auth_tests
