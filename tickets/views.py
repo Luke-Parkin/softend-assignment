@@ -1,9 +1,12 @@
+from logging import getLogger
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import Ticket
 from .models import AssetCategories
+
+logger = getLogger(__name__)
 
 
 @login_required
@@ -17,6 +20,7 @@ def dashboard(request):
         if title == None or description == None:
             # Front end does not allow 'None' in title or descr, so if this point is reached it is likely this endpoint
             # is not reached via the front end, so a JSON response is sent.
+            logger.info("Title or Description are 'None' for ticket Post, invalid.")
             return JsonResponse({"status": "Invalid post request"})
 
         if request.user.is_superuser:
@@ -32,6 +36,8 @@ def dashboard(request):
             asset_description=description,
             category=AssetCategories.LAPTOP,
         )
+        logger.info(f"Asset created, id={ticket.asset_id}")
+
         return redirect(reverse("dashboard") + f"?newt={ticket.asset_id}")
 
     # Check for events
@@ -46,25 +52,33 @@ def dashboard(request):
     )
 
 
+# Do not need to check if asset exists here, this is checked since urls.py requires the asset_id path exists
 @login_required
 def delete_ticket(request, asset_id):
     if request.user.is_authenticated:
         if request.user.is_superuser:
             Ticket.objects.get(asset_id=asset_id).delete()
+            logger.info(f"SuperUser {request.user.username} deleted {asset_id}")
             return JsonResponse({"status": "success"})
         elif request.user.username == Ticket.objects.get(asset_id=asset_id).user_owner:
             Ticket.objects.get(asset_id=asset_id).delete()
+            logger.warn(f"User {request.user.username} deleted {asset_id}")
             return JsonResponse({"status": "success"})
-    return JsonResponse({"status": "unauthorized"})
+        else:
+            logger.warn(
+                f"User {request.user.username} is not authorised to delete ticket {asset_id}"
+            )
+            return JsonResponse({"status": "unauthorized"})
+    logger.info(f"User is not authenticated to delete {asset_id}")
+    return JsonResponse({"status": "unauthenticated"})
 
 
+# Do not need to check if asset exists here, this is checked since urls.py requires the asset_id path exists
 @login_required
 def edit_ticket(request, asset_id):
     if request.method == "POST":
-        try:
-            asset = Ticket.objects.get(asset_id=request.POST.get("asset_id"))
-        except:
-            return redirect(reverse("asset_not_found"))
+
+        asset = Ticket.objects.get(asset_id=request.POST.get("asset_id"))
 
         if request.user.is_superuser:
             user = request.POST.get("owner") or request.user.username
@@ -81,10 +95,7 @@ def edit_ticket(request, asset_id):
         asset.save()
         return redirect(reverse("dashboard") + f"?newt={asset.asset_id}")
 
-    try:  # try fetch asset
-        asset = Ticket.objects.get(asset_id=asset_id)
-    except:  # if asset fetch fails, redirect to 404 page
-        return redirect(reverse("asset_not_found"))
+    asset = Ticket.objects.get(asset_id=asset_id)
 
     if asset.user_owner == request.user.username or request.user.is_superuser:
         return render(request, "edit.html", {"asset": asset})
