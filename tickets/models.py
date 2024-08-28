@@ -3,15 +3,16 @@ from uuid import uuid4
 from enum import Enum
 
 
-class AssetCategories(Enum):
-    LAPTOP = "Laptop"
-    OTHER = "Other"
+class Lists(Enum):
+    UNDELIVERED = "Undelivered"
+    UNASSIGNED = "Unassigned"
+    USEROWNED = "User Owned"
 
 
 class Ticket(models.Model):
     asset_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    category = models.CharField(
-        max_length=255, choices=[(tag.name, tag.value) for tag in AssetCategories]
+    list = models.CharField(
+        max_length=255, choices=[(tag.name, tag.value) for tag in Lists]
     )
     asset_title = models.CharField(max_length=255)
     user_owner = models.CharField(

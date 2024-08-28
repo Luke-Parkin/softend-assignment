@@ -6,15 +6,18 @@
 
 2. By default, when 'PROD' is NOT set in environment variables the default django database will be used, which requires no set up and is connected automatically. (use instructions in the next section for setting up another db)
 
-3. Once you have connected a database (again, done by default if 'PROD' is not set), migrations need to be applied.
+3. Generate the static assets (css, js)
+   `python manage.py collectstatic --clear --no-input`
+
+4. Once you have connected a database (again, done by default if 'PROD' is not set), migrations need to be applied.
    Migrations can be applied by running (from the project's root)
    `python manage.py makemigrations` to generate the migrations
    `python manage.py migrate` to apply them on the database
 
-4. Make a superuser. Once a db has been made, a superuser with access to the admin panel needs to be made. 
+5. Make a superuser. Once a db has been made, a superuser with access to the admin panel needs to be made. 
    `python manage.py createsuperuser`
 
-5. Run the workers
+6. Run the workers
    `python -m gunicorn agile.asgi:application -k uvicorn.workers.UvicornWorker` for production
    - OR -
    `python manage.py runserver` for development
@@ -44,3 +47,5 @@ ease of connection, and the fact they don't delete your data every 30 days like 
 build.sh is defined in the vercel.json, and the script builds the static resources and migrates the db for production.
 
 Vercel automatically runs the build/deployment on merge to main in github.
+
+## Notes on users

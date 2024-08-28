@@ -12,7 +12,7 @@
     display: flex;
     background-color: #fcd253;
     align-items: stretch; /* Ensure children stretch to full height */
-    padding: 0 0.4em; /* Add horizontal padding */
+    padding: 0 0.4em;
 }
 
 .header-img {
@@ -116,3 +116,80 @@
     color: black;
 }
 
+.dash {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ticket-wiz {
+    background-color:lightyellow;
+    margin-top:2em;
+    padding:1em;
+    border-radius:1em;
+
+}
+
+#ticket-form {
+    display:flex;
+    gap: 10px;
+}
+
+
+.ticket-list {
+    flex: 0 0 32%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: lightyellow;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+.ticket-list:last-child {
+    margin-right: 0;
+}
+
+@media screen and (max-width: 500px) {
+    .ticket-list {
+        min-width: 15em;
+    }
+    
+    .scrollable {
+        overflow-x: auto;
+        display: flex;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 0;
+        padding: 10px 0;
+        margin-left: 0; /* Allow full scrolling on mobile */
+        margin-right: 0;
+        justify-content: flex-start; /* Makes sure the items start at the left- otherwise you can't scroll all the way left on mobile */
+    }
+}
+
+@media screen and (min-width: 501px) {
+    .scrollable {
+        overflow-x: auto;
+        display: flex;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 1em;
+        padding: 20px 0;
+        margin: 0 auto;
+        max-width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+}
+
+.ticket-list {
+    scroll-snap-align: start;
+}
+
+.ticket-item {
+    list-style-type: none;
+    background-color: lightgray;
+    padding-left: 0.7em;
+    margin: 0.2em;
+    padding-top: 0.01em;
+    border-radius: 1em;
+    margin-bottom: 0.7em;
+}

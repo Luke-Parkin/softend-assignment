@@ -4,9 +4,29 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import Ticket
-from .models import AssetCategories
+from .models import Lists
 
 logger = getLogger(__name__)
+
+
+class Tickets:
+    def __init__(self, tickets):
+        self.undelivered = tickets.filter(list=str(Lists.UNDELIVERED)).order_by(
+            "-created_at"
+        )
+        self.unassigned = tickets.filter(list=str(Lists.UNASSIGNED)).order_by(
+            "-created_at"
+        )
+        self.userowned = tickets.filter(list=str(Lists.USEROWNED)).order_by(
+            "-created_at"
+        )
+
+    def get_lists(self):
+        return {
+            "undelivered": self.undelivered,
+            "unassigned": self.unassigned,
+            "userowned": self.userowned,
+        }
 
 
 @login_required
@@ -34,21 +54,28 @@ def dashboard(request):
             asset_title=title,
             user_owner=user,
             asset_description=description,
-            category=AssetCategories.LAPTOP,
+            list=Lists.UNDELIVERED,
         )
         logger.info(f"Asset created, id={ticket.asset_id}")
 
         return redirect(reverse("dashboard") + f"?newt={ticket.asset_id}")
 
+    list_options = ["undelivered", "unassigned", "userowned"]
     # Check for events
     delete_success = request.GET.get("delete", None)
     new_ticket = request.GET.get("newt", None)
 
-    tickets = Ticket.objects.all().order_by("-created_at")
+    tickets = Tickets(Ticket.objects)
+
     return render(
         request,
         "board.html",
-        {"tickets": tickets, "deleted": delete_success, "new_ticket": new_ticket},
+        {
+            "tickets": tickets,
+            "deleted": delete_success,
+            "new_ticket": new_ticket,
+            "list_options": list_options,
+        },
     )
 
 
@@ -101,6 +128,25 @@ def edit_ticket(request, asset_id):
         return render(request, "edit.html", {"asset": asset})
     else:
         return JsonResponse({"status": "no_permissions"})
+
+
+@login_required
+def move_ticket(request, asset_id):
+    if request.method == "POST":
+        asset = Ticket.objects.get(asset_id=asset_id)
+        new_list = request.POST.get("selected_option")
+        print(new_list)
+        if new_list == "undelivered":
+            asset.list = Lists.UNDELIVERED
+        elif new_list == "unassigned":
+            asset.list = Lists.UNASSIGNED
+        elif new_list == "userowned":
+            asset.list = Lists.USEROWNED
+        else:
+            logger.info("User has provided incorrect list location")
+            return JsonResponse({"status": "invalid list location"})
+        asset.save()
+        return redirect(reverse("dashboard") + f"?newt={asset_id}")
 
 
 def asset_not_found(request):

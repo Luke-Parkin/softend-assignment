@@ -1,33 +1,50 @@
 {% extends 'base-header.html' %}
 {%block content%}
-<body>
+<body style="display:flex;">
     <div class="sub-header">Dashboard</div>
     {% if deleted %}
         <h2> Delete successful </h2>
     {% endif %}
-    <form id="ticket-form" method="post">
-        {% csrf_token %}
-        <input type="text" name="title" placeholder="Ticket Title" required>
-        <textarea name="description" placeholder="Ticket Description" required></textarea>
-        {% if user.is_superuser %}
-        Optionally, assign owner: <input type="text" name="username" placeholder="{{user.username}}" optional>
-        {% endif %}
-        <button type="submit">Add Ticket</button>
-    </form>
-
-    <ul id="ticket-list">
-        {% for ticket in tickets %}
-            <li data-id="{{ ticket.asset_id }}">
-                <h3>{{ ticket.asset_title }}</h3>
-                <p>{{ ticket.asset_description }}</p>
-                <p><i>owner: {{ticket.user_owner}}</i></p>
-                {% if ticket.user_owner == user.username or user.is_superuser%} 
-                <button class="delete-btn" data-id="{{ ticket.asset_id }}">Delete</button>
-                <a href="{% url 'edit_ticket' ticket.asset_id %}">Edit Ticket</a>
-                {%endif%}
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="dash">
+        <div class="ticket-wiz">
+        <form id="ticket-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Ticket Title" required>
+            {% if user.is_superuser %}
+            Optionally, assign owner: <input type="text" name="username" placeholder="{{user.username}}" optional>
+            {% endif %}
+            <textarea name="description" placeholder="Ticket Description" required></textarea>
+            <button type="submit">Add Ticket</button>
+        </form>
+    </div>
+    </div>
+    <div class="scrollable">
+        {% for list_name, ticket_list in tickets.get_lists.items %}
+            <ul class="ticket-list">
+                <h2>{{list_name|capfirst}} Tickets</h2>
+                {% for ticket in ticket_list %}
+                    <li data-id="{{ ticket.asset_id }}" class="ticket-item">
+                        <h3>{{ ticket.asset_title }}</h3>
+                        <p>{{ ticket.asset_description }}</p>
+                        <p><i>owner: {{ticket.user_owner}}</i></p>
+                        {% if ticket.user_owner == user.username or user.is_superuser%} 
+                        <button class="delete-btn" data-id="{{ ticket.asset_id }}">Delete</button>
+                        <a href="{% url 'edit_ticket' ticket.asset_id %}">Edit Ticket</a>
+                        <form class="moveTicketForm" action="{% url 'move_ticket' asset_id=ticket.asset_id %}" method="POST">
+                            {% csrf_token %}
+                            <select name="selected_option" class="optionSelect">
+                                {% for option in list_options %}
+                                    <option value="{{ option }}" {% if option == list_name %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>                
+                        {%endif%}
+                    </li>
+                {% endfor %}
+            </ul>
+        {%endfor%}
+    </div>
+    
     <script>
         // Handles the delete button event
         document.addEventListener('DOMContentLoaded', function() {
@@ -70,18 +87,30 @@
     <script> 
         // Handles the 'new ticket' event
         document.addEventListener('DOMContentLoaded', function() {
-            var newTicket = "{{ new_ticket }}"; 
+            var newTicket = "{{ new_ticket }}";
             if (newTicket) {
-                var ticketList = document.getElementById('ticket-list');
-                var tickets = ticketList.getElementsByTagName('li');
-                for (var i = 0; i < tickets.length; i++) {
-                    if (tickets[i].getAttribute('data-id') === newTicket) {
-                        tickets[i].classList.add('flash-yellow');
-                        break;
+                var ticketLists = document.getElementsByClassName('ticket-list');
+                for (var j = 0; j < ticketLists.length; j++) {
+                    var tickets = ticketLists[j].getElementsByTagName('li');
+                    for (var i = 0; i < tickets.length; i++) {
+                        if (tickets[i].getAttribute('data-id') === newTicket) {
+                            tickets[i].classList.add('flash-yellow');
+                            return; // Exit both loops once we've found and highlighted the ticket
+                        }
                     }
                 }
             }
         });
     </script>
+    <script>
+        // Handles the auto-submitting for moving tickets
+        document.querySelectorAll('.optionSelect').forEach(function(select) {
+            select.addEventListener('change', function() {
+                console.log("yowch");
+                this.closest('.moveTicketForm').submit();
+            });
+        });
+    </script>
+    
 </body>
 {%endblock%}
