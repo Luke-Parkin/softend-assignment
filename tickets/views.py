@@ -38,13 +38,13 @@ def dashboard(request):
 
         # Server side validation
         if title == None or description == None:
-            # Front end does not allow 'None' in title or descr, so if this point is reached it is likely this endpoint
-            # is not reached via the front end, so a JSON response is sent.
+            # Front end does not allow 'None' or '' in title or descr, so if this point is reached it is likely this endpoint
+            # is not reached via the front end, so a JSON response is sent if an invalid response is met for programs to receive.
             logger.info("Title or Description are 'None' for ticket Post, invalid.")
             return JsonResponse({"status": "Invalid post request"})
 
         if request.user.is_superuser:
-            # we do not enforce a username requirement, owners do not have to have user accounts
+            # we do not enforce a username requirement, owners do not have to have user accounts.
             user = request.POST.get("username") or request.user.username
         else:
             # since login_required, this will always be true
@@ -108,15 +108,17 @@ def edit_ticket(request, asset_id):
         asset = Ticket.objects.get(asset_id=request.POST.get("asset_id"))
 
         if request.user.is_superuser:
-            user = request.POST.get("owner") or request.user.username
+            user = (
+                request.POST.get("owner") or request.user.username
+            )  # If no Owner is sent in the form, default to the submitting user.
         else:
             user = request.user.username
 
-        asset.asset_title = request.POST.get("title") or asset.asset_title
+        asset.asset_title = (
+            request.POST.get("title") or asset.asset_title
+        )  # This field cannot be blank.
         asset.user_owner = user
-        asset.asset_description = (
-            request.POST.get("description") or asset.asset_description
-        )
+        asset.asset_description = request.POST.get("description")
         # asset.category = AssetCategories.LAPTOP
 
         asset.save()
@@ -135,7 +137,6 @@ def move_ticket(request, asset_id):
     if request.method == "POST":
         asset = Ticket.objects.get(asset_id=asset_id)
         new_list = request.POST.get("selected_option")
-        print(new_list)
         if new_list == "undelivered":
             asset.list = Lists.UNDELIVERED
         elif new_list == "unassigned":
