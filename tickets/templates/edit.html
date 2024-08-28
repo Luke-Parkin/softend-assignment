@@ -1,18 +1,25 @@
 {% extends 'base-header.html' %}
-{%block content%}
-<div class="sub-header">Edit ticket</div>
-<form id ="edit-form" method ="post">
-    {% csrf_token %}
-    <input type="hidden" name="asset_id" value="{{ asset.asset_id }}">
-    <input type="text" name="title" value="{{asset.asset_title}}" required>
-    <textarea name="description" required>{{asset.asset_description}}</textarea>    {% if user.is_superuser %}
-    <input type="text" name="owner" value="{{asset.user_owner}}" required>
-    {% else %}
-    <input type="text" name="owner" value="{{asset.user_owner}}" readonly>
-    {% endif %}
-    <button type="submit">Add Ticket</button>
-</form>
+{% block content %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/edit-forms.css' %}">
+<body style="display:flex;">
+    <div class="sub-header">Edit</div>
 
-created: {{asset.created_at}}
-last modified: {{asset.last_modified}}
-{%endblock%}
+    <div class="landing-container" style="margin:auto; margin-top:3em;">
+        <form id ="edit-form" method ="post">
+            {% csrf_token %}
+            <input type="hidden" name="asset_id" value="{{ asset.asset_id }}">
+            Title: <input type="text" name="title" value="{{asset.asset_title}}" required><br>
+            Description: <textarea name="description" required>{{asset.asset_description}}</textarea><br>
+            {% if user.is_superuser %}
+            Owner: <input type="text" name="owner" value="{{asset.user_owner}}" required><br>
+            {% else %}
+            Owner: <input type="text" name="owner" value="{{asset.user_owner}}" readonly><br>
+            {% endif %}
+            <button type="submit">Submit changes</button>
+            <a href="{% url 'dashboard' %}" class="button-link">Discard changes</a>
+        </form>
+        
+    </div>
+</div>
+{% endblock %}

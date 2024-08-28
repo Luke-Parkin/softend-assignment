@@ -1,0 +1,72 @@
+/* Edit page */
+form {
+    display: flex;
+    flex-direction: column;
+    padding:1em;
+}
+
+form label {
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+form input[type="text"],
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+form textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+.button-link {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #ffbdbd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    width: -moz-available;          /* For firefox (i think their engines called blink?? */
+    width: -webkit-fill-available;  /* for WebKit */
+    width: fill-available;
+    align-self: center;
+    margin-top:1em;
+
+}
+
+.button-link:hover {
+    background-color: #ff8e8e; 
+}
+
+.button-link:visited {
+    color: white;  /* Blue links are ugly */
+}
