@@ -4,8 +4,8 @@ from django.test import RequestFactory
 from django.urls import reverse
 from unittest.mock import patch, MagicMock
 
-from tickets.views import dashboard
-from tickets.models import AssetCategories
+from tickets.views import dashboard, Tickets
+from tickets.models import Lists
 
 
 @pytest.fixture
@@ -33,19 +33,25 @@ def mock_superuser():
 # Given an authorised user,
 # Loads the dashboard
 @patch("tickets.views.render")
-@patch("tickets.views.Ticket.objects.all")
-def test_dashboard_get(mock_all, mock_render, factory, mock_user):
+@patch("tickets.views.Tickets")
+def test_dashboard_get(mock_tickets, mock_render, factory, mock_user):
     request = factory.get(reverse("dashboard"))
     request.user = mock_user
-    mock_all.return_value.order_by.return_value = []
+    mock_tickets.return_value = "mock-val"
     mock_render.return_value = HttpResponse()  # Simulate the render function
 
     dashboard(request)
 
-    mock_all.assert_called_once()
-    mock_all.return_value.order_by.assert_called_once_with("-created_at")
+    mock_tickets.assert_called_once()
     mock_render.assert_called_once_with(
-        request, "board.html", {"tickets": [], "deleted": None, "new_ticket": None}
+        request,
+        "board.html",
+        {
+            "tickets": "mock-val",
+            "deleted": None,
+            "new_ticket": None,
+            "list_options": ["undelivered", "unassigned", "userowned"],
+        },
     )
 
 
@@ -71,7 +77,7 @@ def test_dashboard_post_valid(mock_create, factory, mock_user):
         asset_title="Test Title",
         user_owner="testuser",
         asset_description="Test Description",
-        category=AssetCategories.LAPTOP,
+        list=Lists.UNDELIVERED,
     )
 
 
@@ -117,7 +123,7 @@ def test_dashboard_post_superuser(mock_create, factory, mock_superuser):
         asset_title="Test Title",
         user_owner="customuser",
         asset_description="Test Description",
-        category=AssetCategories.LAPTOP,
+        list=Lists.UNDELIVERED,
     )
 
 
@@ -148,7 +154,7 @@ def test_dashboard_post_user_without_auth(mock_create, factory, mock_user):
         asset_title="Test Title",
         user_owner=request.user.username,
         asset_description="Test Description",
-        category=AssetCategories.LAPTOP,
+        list=Lists.UNDELIVERED,
     )
 
 
@@ -156,15 +162,22 @@ def test_dashboard_post_user_without_auth(mock_create, factory, mock_user):
 # With all parameters,
 # correctly passes them to the template.
 @patch("tickets.views.render")
-@patch("tickets.views.Ticket.objects.all")
-def test_dashboard_get_with_params(mock_all, mock_render, factory, mock_user):
+@patch("tickets.views.Tickets")
+def test_dashboard_get_with_params(mock_tickets, mock_render, factory, mock_user):
     request = factory.get(reverse("dashboard") + "?delete=true&newt=12345")
     request.user = mock_user
-    mock_all.return_value.order_by.return_value = []
+    mock_tickets.return_value = "test-val"
     mock_render.return_value = HttpResponse()
 
     dashboard(request)
 
     mock_render.assert_called_once_with(
-        request, "board.html", {"tickets": [], "deleted": "true", "new_ticket": "12345"}
+        request,
+        "board.html",
+        {
+            "tickets": "test-val",
+            "deleted": "true",
+            "new_ticket": "12345",
+            "list_options": ["undelivered", "unassigned", "userowned"],
+        },
     )

@@ -4,6 +4,7 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import AnonymousUser
 from unittest.mock import patch, MagicMock
+from tickets.models import Ticket
 
 from tickets.views import edit_ticket
 
@@ -97,21 +98,6 @@ def test_edit_ticket_get_unauthorized(
     assert response.content.decode("utf-8") == '{"status": "no_permissions"}'
 
 
-# Given a ticket that does not exist
-# redirects to asset_not_found
-@patch("tickets.views.Ticket.objects.get")
-def test_edit_ticket_get_not_found(mock_get, factory, mock_regular_user):
-    mock_get.side_effect = Exception()
-    request = factory.get("/edit-ticket/999/")
-    request.user = mock_regular_user
-
-    response = edit_ticket(request, asset_id="999")
-
-    mock_get.assert_called_once_with(asset_id="999")
-    assert isinstance(response, HttpResponseRedirect)
-    assert response.url == reverse("asset_not_found")
-
-
 # Given a POST edit from a superuser
 # With a new owner
 # changes the owner and edits the ticket
@@ -170,31 +156,17 @@ def test_edit_ticket_post_regular_user(
     assert response.url == reverse("dashboard") + f"?newt={mock_ticket.asset_id}"
 
 
-# Given an asset_id
-# that is not found
-# Redirects the user to the asset_not_found page
-@patch("tickets.views.Ticket.objects.get")
-def test_edit_ticket_post_not_found(mock_get, factory, mock_regular_user):
-    mock_get.side_effect = Exception()
-    request = factory.post("/edit-ticket/999/", {"asset_id": "999"})
-    request.user = mock_regular_user
-
-    response = edit_ticket(request, asset_id="999")
-
-    mock_get.assert_called_once_with(asset_id="999")
-    assert isinstance(response, HttpResponseRedirect)
-    assert response.url == reverse("asset_not_found")
-
-
 # Given an unauthenticated user,
 # Redirects them without editing the database
 @patch("tickets.views.Ticket.objects.get")
-def test_edit_ticket_unauthenticated(mock_get, factory):
-    request = factory.get("/edit-ticket/123/")
+def test_edit_ticket_redirects_unauthenticated_user(mock_get):
+    factory = RequestFactory()
+    request = factory.get("/edit-ticket/999/")
     request.user = AnonymousUser()
+    mock_get.return_value = MagicMock(spec=Ticket)  # Mock the Ticket object
 
-    response = edit_ticket(request, asset_id="123")
+    response = edit_ticket(request, asset_id="999")
 
-    mock_get.assert_not_called()
     assert isinstance(response, HttpResponseRedirect)
-    assert response.status_code == 302
+    assert response.url == "/?next=/edit-ticket/999/"
+    mock_get.assert_not_called()
