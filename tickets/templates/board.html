@@ -11,7 +11,7 @@
             {% csrf_token %}
             <input type="text" name="title" placeholder="Ticket Title" required>
             {% if user.is_superuser %}
-            Optionally, assign owner: <input type="text" name="username" placeholder="{{user.username}}" optional>
+            <input type="text" name="username" placeholder="Optional Owner" optional>
             {% endif %}
             <textarea name="description" placeholder="Ticket Description" required></textarea>
             <button type="submit">Add Ticket</button>
@@ -21,10 +21,10 @@
     <div class="scrollable">
         {% for list_name, ticket_list in tickets.get_lists.items %}
             <ul class="ticket-list">
-                <h2>{{list_name|capfirst}} Tickets</h2>
+                <h2 class="font" style="text-align: center;">{{list_name|capfirst}} Assets</h2>
                 {% for ticket in ticket_list %}
                     <li data-id="{{ ticket.asset_id }}" class="ticket-item">
-                        <h3>{{ ticket.asset_title }}</h3>
+                        <h3 class="font">{{ ticket.asset_title }}</h3>
                         <p>{{ ticket.asset_description }}</p>
                         <p><i>owner: {{ticket.user_owner}}</i></p>
                         {% if ticket.user_owner == user.username or user.is_superuser%} 

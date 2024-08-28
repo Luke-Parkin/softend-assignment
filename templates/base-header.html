@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block header %}
 {% load static %}
-<body style="margin: 0;">
+<body style="margin: 0; background-color: #fcd253;">
     <div class="header-banner">
         <a href={% url 'dashboard' %}>
         <img class="header-img" src="{% static 'img/logo.png' %}" title="Agile Inventory Manager" alt="Agile Inventory Manager Logo">
@@ -20,7 +20,6 @@
         </a>
         </div>
         {% endif %}
-        {% comment %} <h2> Agile Inventory Manager </h2>  {% endcomment %}
     </div>
     <noscript>
         <h1> Javascript is disabled in your browser. Website functionality <b>will</b> be broken</h1>
