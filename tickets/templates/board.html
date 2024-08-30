@@ -30,9 +30,9 @@
                         {% if ticket.user_owner == user.username or user.is_superuser%} 
                         <button class="delete-btn" data-id="{{ ticket.asset_id }}">Delete</button>
                         <a href="{% url 'edit_ticket' ticket.asset_id %}">Edit Ticket</a>
-                        <form class="moveTicketForm" action="{% url 'move_ticket' asset_id=ticket.asset_id %}" method="POST">
+                        <form class="moveTicketForm" style="display: inline;" action="{% url 'move_ticket' asset_id=ticket.asset_id %}" method="POST">
                             {% csrf_token %}
-                            <select name="selected_option" class="optionSelect">
+                            <select name="selected_option" style="margin-bottom: 1em;" class="optionSelect">
                                 {% for option in list_options %}
                                     <option value="{{ option }}" {% if option == list_name %}selected{% endif %}>{{ option }}</option>
                                 {% endfor %}
@@ -106,7 +106,6 @@
         // Handles the auto-submitting for moving tickets
         document.querySelectorAll('.optionSelect').forEach(function(select) {
             select.addEventListener('change', function() {
-                console.log("yowch");
                 this.closest('.moveTicketForm').submit();
             });
         });

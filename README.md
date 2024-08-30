@@ -2,7 +2,8 @@
 
 ## Development
 
-1. Install dependencies with `pip install -r requirements.txt`
+1. In your virtual environment of choice, using Python 3.12 or above, 
+   Install dependencies with `pip install -r requirements.txt`
 
 2. By default, when 'PROD' is NOT set in environment variables the default django database will be used, which requires no set up and is connected automatically. (use instructions in the next section for setting up another db)
 
@@ -40,8 +41,7 @@
 
 For this the official production, two hosts are used
 
-The database is hosted on <neon.tech>. This is quite slow but good enough for the demonstration, and was chosen for the
-ease of connection, and the fact they don't delete your data every 30 days like other free providers
+The database is hosted on <neon.tech>. This is quite slow but good enough for the demonstration, and was chosen for the ease of connection, and the fact they don't delete your data every 30 days like other free providers
 
 <https://vercel.com> is used as the server host, vercel.json stores the infrastructure-as-code, including the rewrite paths for urls.
 build.sh is defined in the vercel.json, and the script builds the static resources and migrates the db for production.
@@ -49,3 +49,6 @@ build.sh is defined in the vercel.json, and the script builds the static resourc
 Vercel automatically runs the build/deployment on merge to main in github.
 
 ## Notes on users
+
+You must create the first superuser using`python manage.py createsuperuser`
+However subsequent superusers may be assigned using the admin page on the website (found at /admin or by pressing the admin button)
