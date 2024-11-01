@@ -52,3 +52,4 @@ Vercel automatically runs the build/deployment on merge to main in github.
 
 You must create the first superuser using`python manage.py createsuperuser`
 However subsequent superusers may be assigned using the admin page on the website (found at /admin or by pressing the admin button)
+test change
